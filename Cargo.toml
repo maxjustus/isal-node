@@ -1,0 +1,18 @@
+[package]
+name = "isal-node"
+version = "0.1.0"
+edition = "2021"
+exclude = ["index.node"]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+neon = "1"
+isal-rs = { version = "0.5.3", features = ["static"] }
+
+[build-dependencies]
+pkg-config = "0.3"
+
+[profile.release]
+lto = true

@@ -1,0 +1,36 @@
+{
+  "name": "isal-node",
+  "version": "0.1.0",
+  "description": "Node.js bindings for Intel Storage Acceleration Library (ISA-L) compression",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "node build.js",
+    "install": "npm run build",
+    "test": "node test/test.js",
+    "test:async": "node test/test-async.js",
+    "test:all": "npm run test && npm run test:async",
+    "benchmark": "node benchmark/benchmark.js",
+    "benchmark:quick": "node benchmark/quick-benchmark.js",
+    "benchmark:async": "node benchmark/async-benchmark.js"
+  },
+  "keywords": ["compression", "gzip", "deflate", "zlib", "isal", "native"],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@neon-rs/cli": "^0.1.73"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "src/",
+    "Cargo.toml",
+    "build.rs",
+    "build.js",
+    "benchmark/"
+  ]
+}
