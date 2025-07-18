@@ -75,30 +75,52 @@ for (const { name, size } of testSizes) {
     const textData = generateTextData(size);
     
     // GZIP Compression
-    const islGzipResult = benchmark('ISA-L GZIP', () => {
+    const islGzipResult = benchmark('ISA-L GZIP Compression', () => {
         return isal.gzip(textData, { level: 3 });
     });
     
-    const nodeGzipResult = benchmark('Node.js GZIP', () => {
+    const nodeGzipResult = benchmark('Node.js GZIP Compression', () => {
         return zlib.gzipSync(textData, { level: 6 });
     });
     
+    // Get compressed data for decompression tests
+    const islCompressed = isal.gzip(textData, { level: 3 });
+    const nodeCompressed = zlib.gzipSync(textData, { level: 6 });
+    
+    // GZIP Decompression
+    const islGunzipResult = benchmark('ISA-L GZIP Decompression', () => {
+        return isal.gunzip(islCompressed);
+    });
+    
+    const nodeGunzipResult = benchmark('Node.js GZIP Decompression', () => {
+        return zlib.gunzipSync(islCompressed);
+    });
+    
+    // Compression performance
     const gzipSpeedup = nodeGzipResult.avg / islGzipResult.avg;
     const gzipWinner = gzipSpeedup > 1 ? 'ISA-L' : 'Node.js';
     const gzipMultiplier = gzipSpeedup > 1 ? gzipSpeedup : 1 / gzipSpeedup;
-    console.log(`🚀 ${gzipWinner} is ${gzipMultiplier.toFixed(2)}x faster for compression`);
+    console.log(`🚀 Compression: ${gzipWinner} is ${gzipMultiplier.toFixed(2)}x faster`);
+    
+    // Decompression performance
+    const gunzipSpeedup = nodeGunzipResult.avg / islGunzipResult.avg;
+    const gunzipWinner = gunzipSpeedup > 1 ? 'ISA-L' : 'Node.js';
+    const gunzipMultiplier = gunzipSpeedup > 1 ? gunzipSpeedup : 1 / gunzipSpeedup;
+    console.log(`🚀 Decompression: ${gunzipWinner} is ${gunzipMultiplier.toFixed(2)}x faster`);
     
     // Throughput
-    const islThroughput = (size / 1024 / 1024) / (islGzipResult.avg / 1000000000);
-    const nodeThroughput = (size / 1024 / 1024) / (nodeGzipResult.avg / 1000000000);
-    console.log(`📈 ISA-L: ${islThroughput.toFixed(2)} MB/s, Node.js: ${nodeThroughput.toFixed(2)} MB/s`);
+    const islCompressThroughput = (size / 1024 / 1024) / (islGzipResult.avg / 1000000000);
+    const nodeCompressThroughput = (size / 1024 / 1024) / (nodeGzipResult.avg / 1000000000);
+    const islDecompressThroughput = (size / 1024 / 1024) / (islGunzipResult.avg / 1000000000);
+    const nodeDecompressThroughput = (size / 1024 / 1024) / (nodeGunzipResult.avg / 1000000000);
+    
+    console.log(`📈 Compression   - ISA-L: ${islCompressThroughput.toFixed(2)} MB/s, Node.js: ${nodeCompressThroughput.toFixed(2)} MB/s`);
+    console.log(`📈 Decompression - ISA-L: ${islDecompressThroughput.toFixed(2)} MB/s, Node.js: ${nodeDecompressThroughput.toFixed(2)} MB/s`);
     
     // Compression ratio
-    const islCompressed = isal.gzip(textData, { level: 3 });
-    const nodeCompressed = zlib.gzipSync(textData, { level: 6 });
     const islRatio = ((textData.length - islCompressed.length) / textData.length * 100).toFixed(1);
     const nodeRatio = ((textData.length - nodeCompressed.length) / textData.length * 100).toFixed(1);
-    console.log(`📊 Compression: ISA-L ${islRatio}%, Node.js ${nodeRatio}%`);
+    console.log(`📊 Compression ratio: ISA-L ${islRatio}%, Node.js ${nodeRatio}%`);
 }
 
 console.log('\n' + '='.repeat(50));
