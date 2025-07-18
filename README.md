@@ -2,6 +2,8 @@
 
 Node.js bindings for the Intel Storage Acceleration Library (ISA-L), providing high-performance compression and decompression for GZIP, DEFLATE, and ZLIB formats.
 
+I built this largely with the help of claude-code.
+
 ## Installation
 
 ```bash
@@ -33,7 +35,12 @@ If no pre-built binary is available, the package will build from source. You'll 
 
 ## Usage
 
-### Synchronous API (Node.js zlib compatible)
+### Synchronous API
+
+**About the formats:**
+- **GZIP**: DEFLATE + GZIP headers (RFC 1952) - used by `.gz` files
+- **DEFLATE**: Raw DEFLATE compression (RFC 1951) - the core algorithm
+- **ZLIB**: DEFLATE + ZLIB headers (RFC 1950) - used by many applications
 
 ```javascript
 const isal = require('isal-node');
@@ -53,9 +60,9 @@ const inflated = isal.inflate(deflated);
 const gzippedSync = isal.gzipSync(data);
 const ungzippedSync = isal.gunzipSync(gzippedSync);
 
-// ZLIB (additional formats)
-const compressed = isal.compress(data);
-const decompressed = isal.decompress(compressed);
+// ZLIB format
+const compressed = isal.zlib(data);
+const decompressed = isal.unzlib(compressed);
 ```
 
 ### Asynchronous API (Non-blocking)
@@ -74,9 +81,9 @@ async function compressData() {
     const deflated = await isal.deflateAsync(data);
     const inflated = await isal.inflateAsync(deflated);
 
-    // ZLIB (additional formats)
-    const compressed = await isal.compressAsync(data);
-    const decompressed = await isal.decompressAsync(compressed);
+    // ZLIB format
+    const compressed = await isal.zlibAsync(data);
+    const decompressed = await isal.unzlibAsync(compressed);
 }
 
 // Parallel compression for better performance
@@ -87,24 +94,11 @@ async function compressMultiple(dataArray) {
 }
 ```
 
-### When to Use Async vs Sync
-
-**Use Async (`*Async` functions) when:**
-- Processing large amounts of data (> 1MB)
-- You need to keep the event loop responsive
-- Running multiple compression operations in parallel
-- In web servers or I/O-intensive applications
-
-**Use Sync (regular functions) when:**
-- Processing small amounts of data (< 100KB)
-- Simple, one-off operations
-- You prefer simpler code without async/await
-
 ## API
 
 ### Node.js zlib Compatible API
 
-**Synchronous:**
+**Sync:**
 - `gzip(input, options?)` - Compress using GZIP
 - `gunzip(input)` - Decompress GZIP data
 - `deflate(input, options?)` - Compress using DEFLATE
@@ -114,35 +108,17 @@ async function compressMultiple(dataArray) {
 - `deflateSync(input, options?)` - Compress using DEFLATE (explicit sync)
 - `inflateSync(input)` - Decompress DEFLATE data (explicit sync)
 
-**Asynchronous (Non-blocking):**
+**Async:**
 - `gzipAsync(input, options?)` - Compress using GZIP (async)
 - `gunzipAsync(input)` - Decompress GZIP data (async)
 - `deflateAsync(input, options?)` - Compress using DEFLATE (async)
 - `inflateAsync(input)` - Decompress DEFLATE data (async)
 
-**Additional Formats:**
-- `compress(input, options?)` - Compress using ZLIB
-- `decompress(input)` - Decompress ZLIB data
-- `compressAsync(input, options?)` - Compress using ZLIB (async)
-- `decompressAsync(input)` - Decompress ZLIB data (async)
-
-### Low-level API (Advanced Usage)
-
-**Synchronous:**
-- `compressGzip(input, level)` - Direct GZIP compression
-- `decompressGzip(input)` - Direct GZIP decompression
-- `compressDeflate(input, level)` - Direct DEFLATE compression
-- `decompressDeflate(input)` - Direct DEFLATE decompression
-- `compressZlib(input, level)` - Direct ZLIB compression
-- `decompressZlib(input)` - Direct ZLIB decompression
-
-**Asynchronous (Non-blocking):**
-- `compressGzipAsync(input, level)` - Direct GZIP compression (async)
-- `decompressGzipAsync(input)` - Direct GZIP decompression (async)
-- `compressDeflateAsync(input, level)` - Direct DEFLATE compression (async)
-- `decompressDeflateAsync(input)` - Direct DEFLATE decompression (async)
-- `compressZlibAsync(input, level)` - Direct ZLIB compression (async)
-- `decompressZlibAsync(input)` - Direct ZLIB decompression (async)
+**ZLIB Format:**
+- `zlib(input, options?)` - Compress using ZLIB format
+- `unzlib(input)` - Decompress ZLIB data
+- `zlibAsync(input, options?)` - Compress using ZLIB format (async)
+- `unzlibAsync(input)` - Decompress ZLIB data (async)
 
 
 ### Options
@@ -174,52 +150,6 @@ Run benchmarks to compare performance against Node.js built-in zlib:
 - `npm run benchmark` - Full benchmark with multiple data sizes and types
 - `npm run benchmark:quick` - Quick benchmark with smaller data sets
 - `npm run benchmark:async` - Async vs sync performance comparison
-
-### Sample Results (Apple M2 Pro)
-
-#### Text Data Performance
-```
-LARGE TEXT DATA (1 MB)
-🚀 ISA-L is 5.21x faster for compression
-📈 ISA-L: 255.02 MB/s, Node.js: 48.91 MB/s
-📊 Compression: ISA-L 78.0%, Node.js 85.5%
-```
-
-#### Random Data Performance
-```
-MEDIUM RANDOM (64 KB)
-🚀 ISA-L is 3.07x faster for compression
-📈 ISA-L: 293.64 MB/s, Node.js: 95.64 MB/s
-📊 Compression: ISA-L -0.11%, Node.js -0.06% (incompressible)
-```
-
-### Enhanced Benchmark Features
-
-**📊 Data Types:**
-- **Text Data**: Realistic text with varied vocabulary
-- **Binary Data**: Simulated file headers and binary patterns  
-- **Random Data**: Cryptographically random, incompressible data
-- **Mixed Data**: Combination of text, binary, and random content
-
-**📈 Data Sizes:**
-- Small: 1KB - 64KB
-- Medium: 512KB - 2MB  
-- Large: 10MB - 50MB
-- Multiple iterations with statistical analysis
-
-**⚡ Metrics:**
-- Compression/decompression speed
-- Throughput (MB/s)
-- Compression ratios
-- Statistical analysis (avg, median, min, max)
-
-### Performance Notes
-
-- **ISA-L excels with**: Large text data, random data, consistent performance
-- **Node.js excels with**: Small binary data, some ARM64 optimizations
-- **Data characteristics matter**: Compression ratios vary significantly by data type
-- **Throughput scales**: ISA-L shows better scaling with larger data sizes
-- **Random data**: Shows minimal compression but ISA-L maintains better performance
 
 ## License
 

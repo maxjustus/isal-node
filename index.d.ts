@@ -16,30 +16,16 @@ export declare function gunzipSync(input: Buffer): Buffer;
 export declare function deflateSync(input: Buffer, options?: CompressionOptions): Buffer;
 export declare function inflateSync(input: Buffer): Buffer;
 
-// ZLIB functions (not in Node.js zlib but useful)
-export declare function compress(input: Buffer, options?: CompressionOptions): Buffer;
-export declare function decompress(input: Buffer): Buffer;
+// ZLIB format functions
+export declare function zlib(input: Buffer, options?: CompressionOptions): Buffer;
+export declare function unzlib(input: Buffer): Buffer;
 
 // Async versions (non-blocking)
 export declare function gzipAsync(input: Buffer, options?: CompressionOptions): Promise<Buffer>;
 export declare function gunzipAsync(input: Buffer): Promise<Buffer>;
 export declare function deflateAsync(input: Buffer, options?: CompressionOptions): Promise<Buffer>;
 export declare function inflateAsync(input: Buffer): Promise<Buffer>;
-export declare function compressAsync(input: Buffer, options?: CompressionOptions): Promise<Buffer>;
-export declare function decompressAsync(input: Buffer): Promise<Buffer>;
+export declare function zlibAsync(input: Buffer, options?: CompressionOptions): Promise<Buffer>;
+export declare function unzlibAsync(input: Buffer): Promise<Buffer>;
 
-// Low-level functions (for advanced usage)
-export declare function compressGzip(input: Buffer, level: number): Buffer;
-export declare function decompressGzip(input: Buffer): Buffer;
-export declare function compressDeflate(input: Buffer, level: number): Buffer;
-export declare function decompressDeflate(input: Buffer): Buffer;
-export declare function compressZlib(input: Buffer, level: number): Buffer;
-export declare function decompressZlib(input: Buffer): Buffer;
-
-export declare function compressGzipAsync(input: Buffer, level: number): Promise<Buffer>;
-export declare function decompressGzipAsync(input: Buffer): Promise<Buffer>;
-export declare function compressDeflateAsync(input: Buffer, level: number): Promise<Buffer>;
-export declare function decompressDeflateAsync(input: Buffer): Promise<Buffer>;
-export declare function compressZlibAsync(input: Buffer, level: number): Promise<Buffer>;
-export declare function decompressZlibAsync(input: Buffer): Promise<Buffer>;
 

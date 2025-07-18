@@ -42,29 +42,12 @@ test('DEFLATE compression and decompression', () => {
 });
 
 test('ZLIB compression and decompression', () => {
-    const compressed = isal.compress(testData);
-    const decompressed = isal.decompress(compressed);
+    const compressed = isal.zlib(testData);
+    const decompressed = isal.unzlib(compressed);
     assert(decompressed.equals(testData));
     assert(compressed.length < testData.length);
 });
 
-test('Direct GZIP functions', () => {
-    const compressed = isal.compressGzip(testData, 3);
-    const decompressed = isal.decompressGzip(compressed);
-    assert(decompressed.equals(testData));
-});
-
-test('Direct DEFLATE functions', () => {
-    const compressed = isal.compressDeflate(testData, 3);
-    const decompressed = isal.decompressDeflate(compressed);
-    assert(decompressed.equals(testData));
-});
-
-test('Direct ZLIB functions', () => {
-    const compressed = isal.compressZlib(testData, 3);
-    const decompressed = isal.decompressZlib(compressed);
-    assert(decompressed.equals(testData));
-});
 
 test('Compression levels', () => {
     const level0 = isal.gzip(testData, { level: 0 });

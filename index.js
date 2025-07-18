@@ -39,13 +39,13 @@ module.exports = {
     return addon.decompressDeflate(input);
   },
   
-  // ZLIB functions (not in Node.js zlib but useful)
-  compress: (input, options = {}) => {
+  // ZLIB format functions
+  zlib: (input, options = {}) => {
     const level = options.level || 3;
     return addon.compressZlib(input, level);
   },
   
-  decompress: (input) => {
+  unzlib: (input) => {
     return addon.decompressZlib(input);
   },
   
@@ -68,28 +68,14 @@ module.exports = {
     return await addon.decompressDeflateAsync(input);
   },
   
-  compressAsync: async (input, options = {}) => {
+  zlibAsync: async (input, options = {}) => {
     const level = options.level || 3;
     return await addon.compressZlibAsync(input, level);
   },
   
-  decompressAsync: async (input) => {
+  unzlibAsync: async (input) => {
     return await addon.decompressZlibAsync(input);
   },
   
-  // Low-level functions (for advanced usage)
-  compressGzip: addon.compressGzip,
-  decompressGzip: addon.decompressGzip,
-  compressDeflate: addon.compressDeflate,
-  decompressDeflate: addon.decompressDeflate,
-  compressZlib: addon.compressZlib,
-  decompressZlib: addon.decompressZlib,
-  
-  compressGzipAsync: addon.compressGzipAsync,
-  decompressGzipAsync: addon.decompressGzipAsync,
-  compressDeflateAsync: addon.compressDeflateAsync,
-  decompressDeflateAsync: addon.decompressDeflateAsync,
-  compressZlibAsync: addon.compressZlibAsync,
-  decompressZlibAsync: addon.decompressZlibAsync,
   
 };

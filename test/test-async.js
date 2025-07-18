@@ -31,29 +31,12 @@ async function runAsyncTests() {
     });
 
     await test('Async ZLIB compression and decompression', async () => {
-        const compressed = await isal.compressAsync(testData);
-        const decompressed = await isal.decompressAsync(compressed);
+        const compressed = await isal.zlibAsync(testData);
+        const decompressed = await isal.unzlibAsync(compressed);
         assert(decompressed.equals(testData));
         assert(compressed.length < testData.length);
     });
 
-    await test('Direct async GZIP functions', async () => {
-        const compressed = await isal.compressGzipAsync(testData, 3);
-        const decompressed = await isal.decompressGzipAsync(compressed);
-        assert(decompressed.equals(testData));
-    });
-
-    await test('Direct async DEFLATE functions', async () => {
-        const compressed = await isal.compressDeflateAsync(testData, 3);
-        const decompressed = await isal.decompressDeflateAsync(compressed);
-        assert(decompressed.equals(testData));
-    });
-
-    await test('Direct async ZLIB functions', async () => {
-        const compressed = await isal.compressZlibAsync(testData, 3);
-        const decompressed = await isal.decompressZlibAsync(compressed);
-        assert(decompressed.equals(testData));
-    });
 
     await test('Async compression levels', async () => {
         const level0 = await isal.gzipAsync(testData, { level: 0 });
