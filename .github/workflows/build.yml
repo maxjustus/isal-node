@@ -125,7 +125,7 @@ jobs:
         run: |
           # We'll create separate packages for each platform
           for binary in prebuilds/*.node; do
-            platform=$(basename "$binary" .node)
+            platform=$(basename "$binary" .node | sed 's/isal-node-//')
             mkdir -p "packages/$platform"
             cp "$binary" "packages/$platform/index.node"
             
