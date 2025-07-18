@@ -37,8 +37,8 @@
     "benchmark/"
   ],
   "optionalDependencies": {
-    "@isal-node/x86_64-unknown-linux-gnu": "0.1.0",
-    "@isal-node/aarch64-unknown-linux-gnu": "0.1.0",
-    "@isal-node/aarch64-apple-darwin": "0.1.0"
+    "isal-node-x86_64-unknown-linux-gnu": "0.1.0",
+    "isal-node-aarch64-unknown-linux-gnu": "0.1.0",
+    "isal-node-aarch64-apple-darwin": "0.1.0"
   }
 }

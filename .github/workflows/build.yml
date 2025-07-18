@@ -132,7 +132,7 @@ jobs:
             # Create platform-specific package.json
             cat > "packages/$platform/package.json" << EOF
           {
-            "name": "@isal-node/$platform",
+            "name": "isal-node-$platform",
             "version": "$(node -p "require('./package.json').version")",
             "description": "Pre-built binary for $platform",
             "main": "index.node",
@@ -165,9 +165,9 @@ jobs:
           node -e "
             const pkg = require('./package.json');
             pkg.optionalDependencies = pkg.optionalDependencies || {};
-            pkg.optionalDependencies['@isal-node/x86_64-unknown-linux-gnu'] = pkg.version;
-            pkg.optionalDependencies['@isal-node/aarch64-unknown-linux-gnu'] = pkg.version;
-            pkg.optionalDependencies['@isal-node/aarch64-apple-darwin'] = pkg.version;
+            pkg.optionalDependencies['isal-node-x86_64-unknown-linux-gnu'] = pkg.version;
+            pkg.optionalDependencies['isal-node-aarch64-unknown-linux-gnu'] = pkg.version;
+            pkg.optionalDependencies['isal-node-aarch64-apple-darwin'] = pkg.version;
             require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2));
           "
       
