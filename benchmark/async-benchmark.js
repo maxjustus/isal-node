@@ -22,7 +22,7 @@ async function runAsyncBenchmark() {
     
     for (let i = 0; i < 10; i++) {
         const compressed = isal.gzip(testData);
-        const decompressed = isal.ungzip(compressed);
+        const decompressed = isal.gunzip(compressed);
     }
     
     const syncEnd = Date.now();
@@ -35,7 +35,7 @@ async function runAsyncBenchmark() {
     
     for (let i = 0; i < 10; i++) {
         const compressed = await isal.gzipAsync(testData);
-        const decompressed = await isal.ungzipAsync(compressed);
+        const decompressed = await isal.gunzipAsync(compressed);
     }
     
     const asyncSeqEnd = Date.now();
@@ -49,7 +49,7 @@ async function runAsyncBenchmark() {
     const promises = [];
     for (let i = 0; i < 10; i++) {
         promises.push(
-            isal.gzipAsync(testData).then(compressed => isal.ungzipAsync(compressed))
+            isal.gzipAsync(testData).then(compressed => isal.gunzipAsync(compressed))
         );
     }
     

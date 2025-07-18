@@ -18,7 +18,7 @@ async function runAsyncTests() {
 
     await test('Async GZIP compression and decompression', async () => {
         const compressed = await isal.gzipAsync(testData);
-        const decompressed = await isal.ungzipAsync(compressed);
+        const decompressed = await isal.gunzipAsync(compressed);
         assert(decompressed.equals(testData));
         assert(compressed.length < testData.length);
     });
@@ -60,9 +60,9 @@ async function runAsyncTests() {
         const level1 = await isal.gzipAsync(testData, { level: 1 });
         const level3 = await isal.gzipAsync(testData, { level: 3 });
         
-        const decompressed0 = await isal.ungzipAsync(level0);
-        const decompressed1 = await isal.ungzipAsync(level1);
-        const decompressed3 = await isal.ungzipAsync(level3);
+        const decompressed0 = await isal.gunzipAsync(level0);
+        const decompressed1 = await isal.gunzipAsync(level1);
+        const decompressed3 = await isal.gunzipAsync(level3);
         
         assert(decompressed0.equals(testData));
         assert(decompressed1.equals(testData));
@@ -72,7 +72,7 @@ async function runAsyncTests() {
     await test('Async empty buffer compression', async () => {
         const empty = Buffer.alloc(0);
         const compressed = await isal.gzipAsync(empty);
-        const decompressed = await isal.ungzipAsync(compressed);
+        const decompressed = await isal.gunzipAsync(compressed);
         assert(decompressed.equals(empty));
     });
 

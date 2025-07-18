@@ -6,10 +6,12 @@
   "types": "index.d.ts",
   "scripts": {
     "build": "node build.js",
-    "install": "npm run build",
+    "install": "node install.js",
+    "postinstall": "node install.js",
     "test": "node test/test.js",
     "test:async": "node test/test-async.js",
-    "test:all": "npm run test && npm run test:async",
+    "test:install": "node test/test-install.js",
+    "test:all": "npm run test && npm run test:async && npm run test:install",
     "benchmark": "node benchmark/benchmark.js",
     "benchmark:quick": "node benchmark/quick-benchmark.js",
     "benchmark:async": "node benchmark/async-benchmark.js"
@@ -31,6 +33,12 @@
     "Cargo.toml",
     "build.rs",
     "build.js",
+    "install.js",
     "benchmark/"
-  ]
+  ],
+  "optionalDependencies": {
+    "@isal-node/x86_64-unknown-linux-gnu": "0.1.0",
+    "@isal-node/aarch64-unknown-linux-gnu": "0.1.0",
+    "@isal-node/aarch64-apple-darwin": "0.1.0"
+  }
 }

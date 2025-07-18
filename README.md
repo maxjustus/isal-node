@@ -2,36 +2,38 @@
 
 Node.js bindings for the Intel Storage Acceleration Library (ISA-L), providing high-performance compression and decompression for GZIP, DEFLATE, and ZLIB formats.
 
-## Prerequisites
-
-This library uses static linking, so **no system dependencies are required**. The Intel Storage Acceleration Library (ISA-L) is compiled and linked statically during the build process.
-
-### Build Requirements
-
-The package requires compilation during installation. Make sure you have:
-- **Rust toolchain** installed (`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs/ | sh`)
-- **Build tools** for your platform:
-  - **macOS**: Xcode command line tools (`xcode-select --install`)
-  - **Linux**: build-essential package (`sudo apt-get install build-essential`)
-  - **Windows**: Visual Studio Build Tools or Visual Studio Community
-
-### macOS Specific Note
-On macOS, you may need to update autoconf if you encounter perl version issues:
-```bash
-brew reinstall autoconf
-```
-
 ## Installation
 
 ```bash
 npm install isal-node
 ```
 
-The package will automatically compile the native module during installation with ISA-L statically linked.
+The package automatically detects your platform and either:
+1. ✅ **Uses a pre-built binary** (no compilation needed)
+2. 🔧 **Falls back to building from source** (if no pre-built binary available)
+
+### Supported Platforms (Pre-built Binaries)
+
+- **macOS ARM64** (Apple Silicon)
+- **Linux x86_64** (Intel/AMD 64-bit)
+- **Linux ARM64** (ARM 64-bit)
+
+### Build Requirements (Fallback Only)
+
+If no pre-built binary is available, the package will build from source. You'll need:
+- **Rust toolchain** (`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs/ | sh`)
+- **Build tools** for your platform:
+  - **macOS**: Xcode command line tools (`xcode-select --install`)
+  - **Linux**: build-essential package (`sudo apt-get install build-essential`)
+  - **Windows**: Visual Studio Build Tools or Visual Studio Community
+
+### System Dependencies
+
+**None!** This library uses static linking, so no system dependencies are required. The Intel Storage Acceleration Library (ISA-L) is compiled and linked statically during the build process.
 
 ## Usage
 
-### Synchronous API
+### Synchronous API (Node.js zlib compatible)
 
 ```javascript
 const isal = require('isal-node');
@@ -39,15 +41,19 @@ const isal = require('isal-node');
 // Simple compression/decompression
 const data = Buffer.from('Hello, World!');
 
-// GZIP
+// GZIP (Node.js zlib compatible)
 const gzipped = isal.gzip(data);
-const ungzipped = isal.ungzip(gzipped);
+const ungzipped = isal.gunzip(gzipped);
 
-// DEFLATE
+// DEFLATE (Node.js zlib compatible)
 const deflated = isal.deflate(data);
 const inflated = isal.inflate(deflated);
 
-// ZLIB
+// With Sync suffix (Node.js zlib compatible)
+const gzippedSync = isal.gzipSync(data);
+const ungzippedSync = isal.gunzipSync(gzippedSync);
+
+// ZLIB (additional formats)
 const compressed = isal.compress(data);
 const decompressed = isal.decompress(compressed);
 ```
@@ -60,15 +66,15 @@ const isal = require('isal-node');
 async function compressData() {
     const data = Buffer.from('Hello, World!');
 
-    // GZIP
+    // GZIP (Node.js zlib compatible naming)
     const gzipped = await isal.gzipAsync(data);
-    const ungzipped = await isal.ungzipAsync(gzipped);
+    const ungzipped = await isal.gunzipAsync(gzipped);
 
-    // DEFLATE
+    // DEFLATE (Node.js zlib compatible naming)
     const deflated = await isal.deflateAsync(data);
     const inflated = await isal.inflateAsync(deflated);
 
-    // ZLIB
+    // ZLIB (additional formats)
     const compressed = await isal.compressAsync(data);
     const decompressed = await isal.decompressAsync(compressed);
 }
@@ -96,25 +102,31 @@ async function compressMultiple(dataArray) {
 
 ## API
 
-### High-level API
+### Node.js zlib Compatible API
 
 **Synchronous:**
 - `gzip(input, options?)` - Compress using GZIP
-- `ungzip(input)` - Decompress GZIP data
+- `gunzip(input)` - Decompress GZIP data
 - `deflate(input, options?)` - Compress using DEFLATE
 - `inflate(input)` - Decompress DEFLATE data
-- `compress(input, options?)` - Compress using ZLIB
-- `decompress(input)` - Decompress ZLIB data
+- `gzipSync(input, options?)` - Compress using GZIP (explicit sync)
+- `gunzipSync(input)` - Decompress GZIP data (explicit sync)
+- `deflateSync(input, options?)` - Compress using DEFLATE (explicit sync)
+- `inflateSync(input)` - Decompress DEFLATE data (explicit sync)
 
 **Asynchronous (Non-blocking):**
 - `gzipAsync(input, options?)` - Compress using GZIP (async)
-- `ungzipAsync(input)` - Decompress GZIP data (async)
+- `gunzipAsync(input)` - Decompress GZIP data (async)
 - `deflateAsync(input, options?)` - Compress using DEFLATE (async)
 - `inflateAsync(input)` - Decompress DEFLATE data (async)
+
+**Additional Formats:**
+- `compress(input, options?)` - Compress using ZLIB
+- `decompress(input)` - Decompress ZLIB data
 - `compressAsync(input, options?)` - Compress using ZLIB (async)
 - `decompressAsync(input)` - Decompress ZLIB data (async)
 
-### Low-level API
+### Low-level API (Advanced Usage)
 
 **Synchronous:**
 - `compressGzip(input, level)` - Direct GZIP compression
@@ -131,6 +143,7 @@ async function compressMultiple(dataArray) {
 - `decompressDeflateAsync(input)` - Direct DEFLATE decompression (async)
 - `compressZlibAsync(input, level)` - Direct ZLIB compression (async)
 - `decompressZlibAsync(input)` - Direct ZLIB decompression (async)
+
 
 ### Options
 

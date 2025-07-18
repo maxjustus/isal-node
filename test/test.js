@@ -15,7 +15,21 @@ const testData = Buffer.from('Hello, World! This is a test string for compressio
 
 test('GZIP compression and decompression', () => {
     const compressed = isal.gzip(testData);
-    const decompressed = isal.ungzip(compressed);
+    const decompressed = isal.gunzip(compressed);
+    assert(decompressed.equals(testData));
+    assert(compressed.length < testData.length);
+});
+
+test('GZIP with Sync suffix', () => {
+    const compressed = isal.gzipSync(testData);
+    const decompressed = isal.gunzipSync(compressed);
+    assert(decompressed.equals(testData));
+    assert(compressed.length < testData.length);
+});
+
+test('DEFLATE with Sync suffix', () => {
+    const compressed = isal.deflateSync(testData);
+    const decompressed = isal.inflateSync(compressed);
     assert(decompressed.equals(testData));
     assert(compressed.length < testData.length);
 });
@@ -57,9 +71,9 @@ test('Compression levels', () => {
     const level1 = isal.gzip(testData, { level: 1 });
     const level3 = isal.gzip(testData, { level: 3 });
     
-    assert(isal.ungzip(level0).equals(testData));
-    assert(isal.ungzip(level1).equals(testData));
-    assert(isal.ungzip(level3).equals(testData));
+    assert(isal.gunzip(level0).equals(testData));
+    assert(isal.gunzip(level1).equals(testData));
+    assert(isal.gunzip(level3).equals(testData));
     
     // Note: For ISA-L, level 3 might not always be smaller than level 1
     assert(level3.length > 0);
@@ -67,10 +81,11 @@ test('Compression levels', () => {
     assert(level0.length > 0);
 });
 
+
 test('Empty buffer compression', () => {
     const empty = Buffer.alloc(0);
     const compressed = isal.gzip(empty);
-    const decompressed = isal.ungzip(compressed);
+    const decompressed = isal.gunzip(compressed);
     assert(decompressed.equals(empty));
 });
 

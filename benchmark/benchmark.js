@@ -230,7 +230,7 @@ for (const [sizeName, sizeData] of Object.entries(testData)) {
         console.log('\n📦 GZIP DECOMPRESSION');
         
         const islGunzipResult = benchmark('ISA-L GUNZIP', () => {
-            return isal.ungzip(compressedGzip);
+            return isal.gunzip(compressedGzip);
         }, iterations);
         
         const nodeGunzipResult = benchmark('Node.js GUNZIP', () => {
