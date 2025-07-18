@@ -15,23 +15,15 @@ jobs:
         settings:
           - host: macos-latest
             target: aarch64-apple-darwin
-            build: |
-              brew install autoconf automake libtool nasm yasm
-              npm run build
+            build: npm run build
             
           - host: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            build: |
-              sudo apt-get update
-              sudo apt-get install autoconf automake libtool nasm yasm -y
-              npm run build
+            build: npm run build
             
           - host: ubuntu-latest
             target: aarch64-unknown-linux-gnu
-            build: |
-              sudo apt-get update
-              sudo apt-get install gcc-aarch64-linux-gnu autoconf automake libtool nasm yasm -y
-              npm run build
+            build: npm run build
             
           # Add more platforms as needed
           # - host: windows-latest
@@ -43,6 +35,20 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Install system dependencies (macOS)
+        if: matrix.settings.host == 'macos-latest'
+        run: brew install autoconf automake libtool nasm yasm
+      
+      - name: Install system dependencies (Ubuntu)
+        if: matrix.settings.host == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          if [ "${{ matrix.settings.target }}" = "aarch64-unknown-linux-gnu" ]; then
+            sudo apt-get install gcc-aarch64-linux-gnu autoconf automake libtool nasm yasm -y
+          else
+            sudo apt-get install autoconf automake libtool nasm yasm -y
+          fi
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
