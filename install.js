@@ -25,7 +25,8 @@ console.log(`📦 Installing isal-node for ${platform}-${arch}`);
 
 // Check if we have a pre-built binary
 const prebuildPackage = `isal-node-${targetTriple}`;
-const prebuildPath = path.join(__dirname, 'node_modules', prebuildPackage, 'index.node');
+const prebuildPath = path.join(__dirname, '..', prebuildPackage, 'index.node');
+
 
 if (fs.existsSync(prebuildPath)) {
   console.log(`✅ Found pre-built binary for ${targetTriple}`);
