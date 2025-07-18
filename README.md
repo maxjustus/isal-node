@@ -11,8 +11,8 @@ npm install isal-node
 ```
 
 The package automatically detects your platform and either:
-1. ✅ **Uses a pre-built binary** (no compilation needed)
-2. 🔧 **Falls back to building from source** (if no pre-built binary available)
+1. **Uses a pre-built binary** (no compilation needed)
+2. **Falls back to building from source** (if no pre-built binary available)
 
 ### Supported Platforms (Pre-built Binaries)
 
@@ -29,18 +29,9 @@ If no pre-built binary is available, the package will build from source. You'll 
   - **Linux**: build-essential package (`sudo apt-get install build-essential`)
   - **Windows**: Visual Studio Build Tools or Visual Studio Community
 
-### System Dependencies
-
-**None!** This library uses static linking, so no system dependencies are required. The Intel Storage Acceleration Library (ISA-L) is compiled and linked statically during the build process.
-
 ## Usage
 
 ### Synchronous API
-
-**About the formats:**
-- **GZIP**: DEFLATE + GZIP headers (RFC 1952) - used by `.gz` files
-- **DEFLATE**: Raw DEFLATE compression (RFC 1951) - the core algorithm
-- **ZLIB**: DEFLATE + ZLIB headers (RFC 1950) - used by many applications
 
 ```javascript
 const isal = require('isal-node');
@@ -60,9 +51,9 @@ const inflated = isal.inflate(deflated);
 const gzippedSync = isal.gzipSync(data);
 const ungzippedSync = isal.gunzipSync(gzippedSync);
 
-// ZLIB format
-const compressed = isal.zlib(data);
-const decompressed = isal.unzlib(compressed);
+// ZLIB (additional formats)
+const compressed = isal.compress(data);
+const decompressed = isal.decompress(compressed);
 ```
 
 ### Asynchronous API (Non-blocking)
@@ -81,9 +72,9 @@ async function compressData() {
     const deflated = await isal.deflateAsync(data);
     const inflated = await isal.inflateAsync(deflated);
 
-    // ZLIB format
-    const compressed = await isal.zlibAsync(data);
-    const decompressed = await isal.unzlibAsync(compressed);
+    // ZLIB (additional formats)
+    const compressed = await isal.compressAsync(data);
+    const decompressed = await isal.decompressAsync(compressed);
 }
 
 // Parallel compression for better performance
@@ -114,11 +105,11 @@ async function compressMultiple(dataArray) {
 - `deflateAsync(input, options?)` - Compress using DEFLATE (async)
 - `inflateAsync(input)` - Decompress DEFLATE data (async)
 
-**ZLIB Format:**
-- `zlib(input, options?)` - Compress using ZLIB format
-- `unzlib(input)` - Decompress ZLIB data
-- `zlibAsync(input, options?)` - Compress using ZLIB format (async)
-- `unzlibAsync(input)` - Decompress ZLIB data (async)
+**Additional Formats:**
+- `compress(input, options?)` - Compress using ZLIB
+- `decompress(input)` - Decompress ZLIB data
+- `compressAsync(input, options?)` - Compress using ZLIB (async)
+- `decompressAsync(input)` - Decompress ZLIB data (async)
 
 
 ### Options
